@@ -19,8 +19,8 @@ export default function HomeScreen({ navigation }) {
 
     //make fetch requests, generate random numbers
     const generateRequests = () => {
-        const min = 50;
-        const max = 75;
+        const min = 5;
+        const max = 15;
         const poemCount = 3;
         const linecounts = [];
         for (let i = 0; i < poemCount; i++) {
@@ -39,7 +39,6 @@ export default function HomeScreen({ navigation }) {
                 return response.json();
             }));
         })
-        /*[[{"author": "Robert Herrick", "linecount": "6", "lines": [Array], "title": "TO MUSIC: A SONG"}], [{"author": "Sir Walter Raleigh", "linecount": "10", "lines": [Array], "title": "Life"}], [{"author": "Robert Herrick", "linecount": "8", "lines": [Array], "title": "THE SUCCESSION OF THE FOUR SWEET MONTHS"}]]*/
         .then(function (data) {
             console.log('OLD DATA: ', data);
             console.log('\nMAPPING OVER THE THING\n')
@@ -65,20 +64,6 @@ export default function HomeScreen({ navigation }) {
             setPoems([newData]);
             console.log(poems)
         })
-        /*.then(function (data) {
-            var arr = data.map(item => item[0].lines.map(line => {
-                return (line)
-            }));
-            console.log('ORIGINAL ', arr);
-            var res = arr[0].reduce(function(array, content) {
-                array.push({id: uuidv4(), line: content});
-                return array;
-            }, []);
-            console.log('NEW', res);
-            data.map(item => setPoem({...poem, title: item[0].title, author: item[0].author, linecount: item[0].linecount, lines: res}));
-            console.log(poem);
-            console.log('ALL POEMS: ', poems);
-        })*/
         .catch(function (error) {
             console.log(error);
         })

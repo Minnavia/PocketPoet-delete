@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import BigList from "react-native-big-list";
 
 export default function DisplayPoem({ route, navigation }) {
 
@@ -36,7 +35,7 @@ const styles = StyleSheet.create({
     },
     listItem: {
         flex: 1,
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
     }
   });  

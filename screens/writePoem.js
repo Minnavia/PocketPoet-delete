@@ -1,10 +1,11 @@
-import { RichText, Toolbar, useEditorBridge } from "@10play/tentap-editor";
-import React from "react";
+import { BlockquoteBridge, BoldBridge, ItalicBridge, RichText, StrikeBridge, Toolbar, useEditorBridge, useEditorContent } from "@10play/tentap-editor";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { Platform, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
+import { Platform, KeyboardAvoidingView, SafeAreaView, Button, StyleSheet, Text, View } from "react-native";
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
-export default function WritePoem() {
+export default function WritePoem({navigation}) {
 
     const [poem, setPoem] = useState({
         title: '',
@@ -12,69 +13,67 @@ export default function WritePoem() {
         lines: [],
     });
 
+    const [lines, setLines] = useState('');
+
     const editor = useEditorBridge({
         autofocus: true,
         avoidIosKeyboard: true,
-        initialContent,
+        /*bridgeExtensions: [
+            BlockquoteBridge,
+            ItalicBridge,
+            BoldBridge,
+            StrikeBridge,
+        ]*/
     });
 
-    const initialContent = `<p>This is a basic example!</p>`;
+    const content = useEditorContent(editor, {type: 'html'})
 
-    const handleHead = ({ tintColor }) => ( 
-        <Text style={{ color: tintColor }}>H1</Text> 
-    );
+    const saveLines = () => {
+        setLines(content.toString());
+    };
 
-    const richText = React.useRef();
+    useEffect(() => {
+        content && saveLines(content);
+    }, [content])
+
+    const savePoem = () => {
+        const array = lines.replace(/<p>/g, '').split('</p>');
+        const arr = array.reduce(function(array, content) {
+            array.push({id: uuidv4(), line: content});
+            return array;
+        }, []);
+        console.log(arr);
+        setPoem({author: 'mie', title: 'jotain', lines: arr})
+        console.log(poem);
+    }
+
+    const submitPoem = () => {
+        navigation.navigate('Poem', {poem: poem})
+    }
 
     return(
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.editor}>
             <RichText editor={editor} />
             <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.KeyboardAvoidingView}>
                 <Toolbar editor={editor}/>
             </KeyboardAvoidingView>
+            <Button title='save' onPress={()=>{savePoem()}}></Button>
+            <Button title='Read' onPress={() => {submitPoem()}}></Button>
         </SafeAreaView>
-        /*<SafeAreaView>
-            <ScrollView>
-                <KeyboardAvoidingView
-                    behavior={
-                        Platform.OS === 'ios'?'padding':'height'}
-                    style={{flex:1}}>
-                        <RichToolbar 
-                            style={{ marginTop: 10 }}
-                            editor={richText}
-                            actions={[
-                                actions.setBold,
-                                actions.setItalic,
-                                actions.setUnderline,
-                                actions.setStrikethrough,
-                                actions.insertBulletsList,
-                                actions.insertOrderedList,]}
-                        />
-                        <Text style={{ fontFamily: "monospace", 
-                                   fontWeight: 900, 
-                                   fontSize: 15, 
-                                   padding: 10}}> 
-                            Description: 
-                        </Text> 
-                        <RichEditor 
-                            ref={richText}
-                            onChange={(descriptionText) => {
-                                console.log('descriptionText: ', descriptionText);
-                            }}/>
-                </KeyboardAvoidingView>
-            </ScrollView>
-        </SafeAreaView>*/
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    editor: {
+        flex: 1,
     },
     keyboardAvoidingView: {
         position: 'absolute',
