@@ -8,31 +8,19 @@ export default function DisplayPoem({ route, navigation }) {
 
     const renderItem = ({ item }) => (
         <View style={styles.listItem}>
-            <Text>{item}</Text>
+            <Text>{item.line}</Text>
         </View>
     );
 
     return (
         <View style={styles.container}>
-            <View style={styles.container}>
-                <Text>{poem[0].title}</Text>
-                <Text>{poem[0].author}</Text>
+                <Text>{poem.title}</Text>
+                <Text>{poem.author}</Text>
                 <FlatList
-                    data={poem[0].lines}
+                    data={poem.lines}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.index}
+                    keyExtractor={(item) => item.id}
                 ></FlatList>
-            </View>
-            <View style={styles.container}>
-                <Text>{poem[0].title}</Text>
-                <Text>{poem[0].author}</Text>
-                <BigList
-                    data={poem[0].lines}
-                    renderItem={renderItem}
-                    itemHeight={25}
-                    keyExtractor={(item) => item.index}
-                ></BigList>
-            </View>
         </View>
     )
 }
@@ -43,10 +31,11 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'center',
+      paddingLeft: 20,
+      paddingRight: 20,
     },
     listItem: {
         flex: 1,
-        backgroundColor: 'pink',
         alignItems: 'center',
         justifyContent: 'center',
     }
