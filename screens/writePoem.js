@@ -1,7 +1,7 @@
 import { BlockquoteBridge, BoldBridge, ItalicBridge, RichText, StrikeBridge, Toolbar, useEditorBridge, useEditorContent } from "@10play/tentap-editor";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Platform, KeyboardAvoidingView, SafeAreaView, Button, StyleSheet, Text, View } from "react-native";
+import { Platform, KeyboardAvoidingView, SafeAreaView, Button, StyleSheet, Text, View, TextInput } from "react-native";
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -43,7 +43,7 @@ export default function WritePoem({navigation}) {
             return array;
         }, []);
         console.log(arr);
-        setPoem({author: 'mie', title: 'jotain', lines: arr})
+        setPoem({...poem, author: 'mie', lines: arr})
         console.log(poem);
     }
 
@@ -53,6 +53,7 @@ export default function WritePoem({navigation}) {
 
     return(
         <SafeAreaView style={styles.editor}>
+            <TextInput placeholder="Title" onChangeText={(e) => setPoem({...poem, title: e})}/>
             <RichText editor={editor} />
             <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
